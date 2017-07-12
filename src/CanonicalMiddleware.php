@@ -3,9 +3,28 @@
 namespace Watson\Canonical;
 
 use Closure;
+use Illuminate\Contracts\Config\Repository;
 
 class CanonicalMiddleware
 {
+    /**
+     * The config repository.
+     *
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $config;
+
+    /**
+     * Create a new middleware instance.
+     *
+     * @param  \Illuminate\Contracts\Config\Repository  $config
+     * @return void
+     */
+    public function __construct(Repository $config)
+    {
+        $this->config = $config;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -15,9 +34,9 @@ class CanonicalMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (config('canonical.host')) {
+        if ($this->config->has('canonical.host')) {
             if ($this->isIncorrectHost($request)) {
-                if (in_array($request->header('Host'), config('canonical.ignore'))) {
+                if (in_array($request->header('Host'), (array) $this->config->get('canonical.ignore'))) {
                     return;
                 }
 
@@ -41,7 +60,7 @@ class CanonicalMiddleware
      */
     protected function isIncorrectHost($request)
     {
-        return $request->header('Host') !== config('canonical.host');
+        return $request->header('Host') !== $this->config->get('canonical.host');
     }
 
     /**
@@ -52,7 +71,7 @@ class CanonicalMiddleware
      */
     protected function isIncorrectScheme($request)
     {
-        return config('canonical.secure') && ! $request->secure();
+        return $this->config->get('canonical.secure') && ! $request->secure();
     }
 
     /**
@@ -64,7 +83,7 @@ class CanonicalMiddleware
      */
     protected function redirect($request, $secure = false)
     {
-        $headers = ['Host' => config('canonical.host')];
+        $headers = ['Host' => $this->config->get('canonical.host')];
 
         return redirect()->to($request->path(), 301, $headers, $secure);;
     }

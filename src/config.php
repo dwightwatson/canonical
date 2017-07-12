@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'host' => 'laravel.com',
+    'host' => env('CANONICAL_HOST'),
 
     /*
     |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ return [
     |
     */
 
-    'secure' => false,
+    'secure' => env('CANONICAL_SECURE', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,6 +35,6 @@ return [
     | for example an API subdomain.
     |
     */
-    'ignore' = []
+    'ignore' = env('CANONICAL_IGNORE', [])
 
 ];
