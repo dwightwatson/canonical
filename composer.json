@@ -28,5 +28,5 @@
                 "Watson\\Canonical\\CanonicalServiceProvider"
             ],
         }
-    },
+    }
 }
