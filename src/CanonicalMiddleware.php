@@ -48,7 +48,6 @@ class CanonicalMiddleware
             }
         }
 
-
         return $next($request);
     }
 
