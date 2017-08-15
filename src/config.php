@@ -31,10 +31,10 @@ return [
     | Ignored Hosts
     |--------------------------------------------------------------------------
     |
-    | Set hosts that you are happy to ignore and not perform a redirect for.,
+    | Set hosts that you are happy to ignore and not perform a redirect for,
     | for example an API subdomain.
     |
     */
-    'ignore' = env('CANONICAL_IGNORE', [])
+    'ignore' => env('CANONICAL_IGNORE', [])
 
 ];
