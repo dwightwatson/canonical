@@ -34,7 +34,7 @@ class CanonicalMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($this->config->has('canonical.host')) {
+        if ($this->config->get('canonical.host') !== null) {
             if ($this->isIncorrectHost($request)) {
                 if (in_array($request->header('Host'), (array) $this->config->get('canonical.ignore'))) {
                     return;
