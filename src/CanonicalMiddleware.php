@@ -65,6 +65,6 @@ class CanonicalMiddleware
     {
         $headers = ['Host' => config('canonical.host')];
 
-        return redirect()->to($request->path(), 301, $headers, $secure);;
+        return redirect()->to($request->path(), 301, $headers, $secure);
     }
 }
