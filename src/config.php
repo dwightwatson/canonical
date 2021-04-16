@@ -35,6 +35,6 @@ return [
     | for example an API subdomain.
     |
     */
-    'ignore' => env('CANONICAL_IGNORE', [])
+    'ignore' => explode(',', env('CANONICAL_IGNORE', ''))
 
 ];
