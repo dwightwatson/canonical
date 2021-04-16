@@ -16,15 +16,15 @@ class CanonicalMiddleware
     public function handle($request, Closure $next)
     {
         // Force https when canonical.secure is set to true
-        if ($this->isIncorrectScheme($request)) {
+        if ($this->redirectSecure($request)) {
             return redirect()->secure($request->getRequestUri(), 301);
         }
         
         // Redirect to canonical.host when current host is different and 
         // current host is not set in canonical.ignore
-        if ($this->isIncorrectHost($request)) {
+        if ($redirect_host = $this->redirectHost($request)) {
             return redirect(
-                $request->getScheme().'://'.config('canonical.host').$request->getRequestUri(),
+                $request->getScheme().'://'.$redirect_host.$request->getRequestUri(),
                 301
             );
         }
@@ -37,15 +37,20 @@ class CanonicalMiddleware
      * host is not set in canonical.ignore.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return bool
+     * @return mixed
      */
-    protected function isIncorrectHost($request)
+    protected function redirectHost($request)
     {
-        if (config('canonical.host') !== null 
-            && $request->getHost() !== config('canonical.host') 
+        // Determine configured canonical host
+        $canonical_host = (config('canonical.host') === true) 
+            ? parse_url(config('app.url'), PHP_URL_HOST) 
+            : config('canonical.host');
+
+        if ($canonical_host !== null 
+            && $request->getHost() !== $canonical_host 
             && !in_array($request->getHost(), config('canonical.ignore'))
         ) {
-            return true;
+            return $canonical_host;
         }
         return false;
     }
@@ -56,7 +61,7 @@ class CanonicalMiddleware
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    protected function isIncorrectScheme($request)
+    protected function redirectSecure($request)
     {
         return config('canonical.secure') && ! $request->secure();
     }
