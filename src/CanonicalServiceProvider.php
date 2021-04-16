@@ -25,8 +25,11 @@ class CanonicalServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/config.php' => config_path('canonical.php'),
-        ], 'config');
+        $this->publishes(
+            [
+                __DIR__ . '/config.php' => config_path('canonical.php'),
+            ],
+            'config'
+        );
     }
 }
