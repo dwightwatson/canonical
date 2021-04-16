@@ -15,32 +15,39 @@ class CanonicalMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (config('canonical.host') !== null) {
-            if ($this->isIncorrectHost($request)) {
-                if (in_array($request->header('Host'), (array) config('canonical.ignore'))) {
-                    return;
-                }
-
-                return $this->redirect($request);
-            }
-
-            if ($this->isIncorrectScheme($request)) {
-                return $this->redirect($request, true);
-            }
+        // Force https when canonical.secure is set to true
+        if ($this->isIncorrectScheme($request)) {
+            return redirect()->secure($request->getRequestUri(), 301);
         }
-
+        
+        // Redirect to canonical.host when current host is different and 
+        // current host is not set in canonical.ignore
+        if ($this->isIncorrectHost($request)) {
+            return redirect(
+                $request->getScheme().'://'.config('canonical.host').$request->getRequestUri(),
+                301
+            );
+        }
+        
         return $next($request);
     }
 
     /**
-     * Determine whether the request has the incorrect host.
+     * Determine whether the request has the incorrect host and current 
+     * host is not set in canonical.ignore.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     protected function isIncorrectHost($request)
     {
-        return $request->header('Host') !== config('canonical.host');
+        if (config('canonical.host') !== null 
+            && $request->getHost() !== config('canonical.host') 
+            && !in_array($request->getHost(), config('canonical.ignore'))
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -52,19 +59,5 @@ class CanonicalMiddleware
     protected function isIncorrectScheme($request)
     {
         return config('canonical.secure') && ! $request->secure();
-    }
-
-    /**
-     * Redirect the request to the canonical host, secure if neccessary.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  bool $secure
-     * @return \Illuminate\Http\Redirect
-     */
-    protected function redirect($request, $secure = false)
-    {
-        $headers = ['Host' => config('canonical.host')];
-
-        return redirect()->to($request->path(), 301, $headers, $secure);
     }
 }
