@@ -17,6 +17,7 @@ Next, add `Watson\Canonical\CanonicalMiddleware` to your `app/Http/Kernel.php` f
 Canonical works on L6.x, L7.x and L8.x.
 
 ## Configuration
+### .env file
 Configure Canonical through environment variables by specifying CANONICAL_HOST in your `.env` file.
 ```php
 CANONICAL_HOST=false // Disable Canonical
@@ -32,6 +33,7 @@ To prevent certain hosts from being redirected, list them in the CANONICAL_IGNOR
 CANONICAL_IGNORE=api.mydomain.tld // Ignore this domain from being redirected
 CANONICAL_IGNORE=api.mydomain.tld,admin.mydomain.com // Comma-separate multiple hosts
 ```
+### Configuration file
 You can also configure Canonical by publishing the configuration file to your app with `php artisan vendor:publish --tags=config`.
 
 Take a look at the configuration file that was created for you, `config/canonical.php`. Here you can set the default host name that you want to use for your app.
