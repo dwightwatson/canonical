@@ -1,7 +1,7 @@
 {
     "name": "watson/canonical",
-    "description": "Canonical host middleware for Laravel",
-    "keywords": ["laravel", "canonical", "redirector"],
+    "description": "Canonical host redirect middleware for Laravel",
+    "keywords": ["laravel", "canonical", "https", "redirector"],
     "license": "MIT",
     "authors": [
         {
@@ -10,13 +10,9 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
-        "illuminate/contracts": ">=5.4",
-        "illuminate/http": ">=5.4"
-    },
-    "require-dev": {
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0"
+        "php": "^7.2.5|^8.0",
+        "illuminate/contracts": "^6.0|^7.0|^8.0",
+        "illuminate/http": "^6.0|^7.0|^8.0"
     },
     "autoload": {
         "psr-4": {
